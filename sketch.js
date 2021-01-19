@@ -1,10 +1,10 @@
 var hr, mn, sc;
 var hrAngle, mnAngle, scAngle; 
 
-var background,img
+
 function preload(){
 
-  img=loadImage("bg.jpg")
+
 
 }
 
@@ -13,8 +13,7 @@ function setup(){
     createCanvas(400,400); 
     angleMode(DEGREES);   
 
-    background=createSprite(200,200)
-    background.addImage(bgImg)
+  
   }
 
 function draw(){
