@@ -1,68 +1,110 @@
-var hr, mn, sc;
-var hrAngle, mnAngle, scAngle; 
 
-
+var b,bi,boyi;
+var e,ei,obstaclei;
+var groun,invisibleGround
+var house,houseImg
+var sword
+var score = 0
+var gameState="END"
 function preload(){
 
+boyi=loadAnimation("boy1.png","boy2.png","boy3.png","boy4.png","boy5.png")
+//enemyi=loadAnimation("enemy.gif")
+obstaclei=loadImage("hand3.png")
 
+//obstacle2=loadAnimation("zombie1.png","zombie2.png","zombie3.png","zombie4.png","zombie5.png")
+obstacle2=loadImage("z1.png")
+boyz=loadImage("boyzombie.png")
+
+houseImg=loadImage("hauntedhouse.jpg")
+GameOveri=loadImage("GameOver.png")
+}
+
+function setup(){
+
+createCanvas(1000,500)
+
+house=createSprite(500,240,200,10)
+house.addImage(houseImg)
+house.scale=0.6
+house.velocityX=-2
+boy=createSprite(400,460)
+//enemy=createSprite(100,100)
+boy.scale=2
+boy.addAnimation("r",boyi)
+//enemy.addAnimation("g",enemyi)
+boy.addImage("z",boyz)
+edges = createEdgeSprites()
+obstaclegroup = new Group()
+
+GameOver= createSprite(500,225)
+GameOver.addImage(GameOveri)
+GameOver.visible=false
 
 }
 
-
-function setup(){
-    createCanvas(400,400); 
-    angleMode(DEGREES);   
-
-  
-  }
-
 function draw(){
-    background(0);
 
-    translate(200,200)
-    rotate(-90)
+background(0)
 
-    hr = hour();
-    mn = minute();
-    sc = second();
+score= Math.round(frameCount/60)
+ 
+house.velocityX=-2
+if(house.x<500){
+  house.x=600 
+}
 
-    scAngle = map(sc, 0, 60, 0, 360);
-    mnAngle = map(mn,0,60,0,360)
-    hrAngle = map(hr % 12,0,12,0,360)
+if(keyDown("space") && boy.y>410){
 
-    push();
-    rotate(scAngle);
-    stroke(255,0,0);
-    strokeWeight(7);
-    line(0,0,100,0);
-    pop()
+    boy.velocityY = -18
+}
+boy.velocityY = boy.velocityY+ 0.8
 
-    push();
-    rotate(mnAngle);
-    stroke(0,255,0);
-    strokeWeight(7);
-    line(0,0,75,0);
-    pop()
 
-    push();
-    rotate(hrAngle);
-    stroke(0,0,255);
-    strokeWeight(7);
-    line(0,0,50,0);
-    pop()
-
-    stroke(255,0,255);
-    point(0,0)
-
-    strokeWeight(10);
-    noFill();
+if (boy.isTouching(obstaclegroup)){
     
-    stroke(255,0,0);
-    arc(0,0,300,300,0,scAngle);
+    boy.changeImage("z",boyz)
+    GameOver.visible=true
+ boy.velocityY=0
+ obstaclegroup.setVelocityXEach(0)
+ house.velocityX=0
+}
+
+boy.collide(edges[3])
+spawnobstacles()
+
+drawSprites();
+
+stroke("red")
+strokeWeight("20")
+textSize(20)
+text("Lived So Far : "+ score, width/2,50)
+
+}
+
+function spawnobstacles(){
+if(frameCount%200===0){
+
+    obstacle=createSprite(1000,470)
     
-    stroke(0,255,0);
-    arc(0,0,280,280,0,mnAngle);
+    obstacle.velocityX=-7
     
-    stroke(0,0,255);
-    arc(0,0,260,260,0,hrAngle);
+    //obstacle.addImage(obstaclei)
+    
+var rand= Math.round(random(1,2))
+switch(rand){
+case 1 :    obstacle.addImage(obstaclei);
+break;
+
+case 2 :    obstacle.addImage(obstacle2)
+break; 
+
+default: break;
+}
+obstaclegroup.add(obstacle)
+//obstacle.scale=0.15
+
+//obstacle.debug=true
+obstacle.setCollider("circle",0,0,40)
+}
 }
